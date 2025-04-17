@@ -1,23 +1,262 @@
 <!DOCTYPE html>
 <html>
-<head><title>Vulnyx Scanner</title></head>
-<body>
-  <h1>🛠️ Vulnyx Scanner</h1>
+  <head>
+    <title>Vulnyx Scanner</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/terminal.css@0.7.2/dist/terminal.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/main.css" />
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              terminal: {
+                bg: 'var(--background-color)',
+                text: 'var(--font-color)',
+                primary: 'var(--primary-color)',
+                secondary: 'var(--secondary-color)',
+                error: 'var(--error-color)',
+              }
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body class="terminal dark">
+    <div class="flex flex-col min-h-screen">
+      <header class="container mx-auto px-4 py-4">
+        <div class="terminal-nav">
+          <div class="terminal-logo">
+            <div class="logo terminal-prompt">
+              <a href="/" class="no-style text-xl font-bold">Vulnyx Scanner</a>
+            </div>
+          </div>
+          <nav class="terminal-menu">
+            <ul>
+              <li><a class="menu-item active" href="/">Dashboard</a></li>
+              <li><a class="menu-item" href="#history">History</a></li>
+              <li><a class="menu-item" href="#vulnerabilities">Vulnerabilities</a></li>
+              <li><a class="menu-item" href="#settings">Settings</a></li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+      
+      <main class="container mx-auto px-4 py-4 flex-grow">
+        <div class="mb-8">
+          <div class="flex items-center mb-4">
+            <h1 class="text-2xl font-bold">🛡️ Website Security Scanner</h1>
+          </div>
+          
+          <div class="terminal-card">
+            <header class="bg-terminal-primary text-terminal-bg font-bold">New Scan</header>
+            <div class="p-4">
+              <form method="post" action="/scan" class="flex flex-col md:flex-row gap-4">
+                <input type="text" name="domain" placeholder="example.com" required class="flex-grow" />
+                <select name="scan_type" class="w-full md:w-48">
+                  <option value="full">Full Scan</option>
+                  <option value="quick">Quick Scan</option>
+                  <option value="vuln">Vulnerability Scan</option>
+                  <option value="recon">Reconnaissance</option>
+                </select>
+                <button type="submit" class="btn btn-primary w-full md:w-auto">Scan Website</button>
+              </form>
+            </div>
+          </div>
+        </div>
 
-  <form method="post" action="/scan">
-    <input type="text" name="domain" placeholder="example.com" required>
-    <button type="submit">Scan</button>
-  </form>
+        {% if message %}
+        <div class="terminal-alert terminal-alert-primary mb-6">
+          {{ message }}
+        </div>
+        {% endif %}
 
-  <h2>Results:</h2>
-  <ul>
-    {% for item in results %}
-      <li>{{ item.domain }} — Score: {{ item.score }}</li>
-    {% endfor %}
-  </ul>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <!-- Active Scans -->
+          <div class="terminal-card">
+            <header>Active Scans</header>
+            <div class="p-4">
+              {% set active_scans = [] %}
+              {% for item in results %}
+                {% if item.status == "running" %}
+                  {% set active_scans = active_scans + [item] %}
+                {% endif %}
+              {% endfor %}
+              
+              {% if active_scans|length > 0 %}
+                <div class="terminal-timeline">
+                  {% for scan in active_scans %}
+                  <div class="terminal-card mb-4">
+                    <header>{{ scan.domain }}</header>
+                    <div class="p-3">
+                      <div class="mb-2">Status: Running...</div>
+                      <div class="w-full bg-terminal-bg rounded-full h-2.5 mb-2">
+                        <div class="bg-terminal-primary h-2.5 rounded-full" style="width: 45%"></div>
+                      </div>
+                      <small class="text-terminal-secondary">Started 2 minutes ago</small>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+              {% else %}
+                <p class="text-terminal-secondary">No active scans</p>
+              {% endif %}
+            </div>
+          </div>
 
-  {% if message %}
-    <p style="color: green;">{{ message }}</p>
-  {% endif %}
-</body>
+          <!-- Recent Vulnerabilities -->
+          <div class="terminal-card">
+            <header>Recent Vulnerabilities</header>
+            <div class="p-4">
+              {% set vuln_count = namespace(count=0) %}
+              {% for item in results %}
+                {% if item.vulnerabilities is defined and item.vulnerabilities|length > 0 %}
+                  {% set vuln_count.count = vuln_count.count + item.vulnerabilities|length %}
+                {% endif %}
+              {% endfor %}
+              
+              {% if vuln_count.count > 0 %}
+                <div class="terminal-timeline">
+                  {% for item in results %}
+                    {% if item.vulnerabilities is defined %}
+                      {% for vuln in item.vulnerabilities %}
+                        <div class="terminal-card mb-4 border-terminal-error">
+                          <header class="bg-terminal-error text-terminal-bg">{{ vuln.type }}</header>
+                          <div class="p-3">
+                            <div class="mb-1">Path: {{ vuln.path }}</div>
+                            <div class="mb-1">Severity: {{ vuln.severity|default('Medium') }}</div>
+                            <small class="text-terminal-secondary">{{ item.domain }}</small>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    {% endif %}
+                  {% endfor %}
+                </div>
+              {% else %}
+                <p class="text-terminal-secondary">No vulnerabilities found</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Scan History -->
+        <div id="history" class="terminal-card mb-8">
+          <header>Scan History</header>
+          <div class="p-4">
+            <div class="overflow-x-auto">
+              <table class="terminal-table w-full">
+                <thead>
+                  <tr>
+                    <th>Domain</th>
+                    <th>Date</th>
+                    <th>Scan Type</th>
+                    <th>Status</th>
+                    <th>Vulnerabilities</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in results %}
+                  <tr>
+                    <td>{{ item.domain }}</td>
+                    <td>{{ item.date|default('N/A') }}</td>
+                    <td>{{ item.scan_type|default('Full') }}</td>
+                    <td>
+                      {% if item.status == "done" %}
+                      <span class="text-green-500">✓ Complete</span>
+                      {% elif item.status == "running" %}
+                      <span class="text-yellow-500">⟳ Running</span>
+                      {% else %}
+                      <span class="text-red-500">✗ Failed</span>
+                      {% endif %}
+                    </td>
+                    <td>{{ item.vulnerabilities|length|default(0) }}</td>
+                    <td>
+                      <a href="#" class="btn btn-primary btn-sm">Details</a>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  {% if results|length == 0 %}
+                  <tr>
+                    <td colspan="6" class="text-center text-terminal-secondary">No scan history</td>
+                  </tr>
+                  {% endif %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vulnerability Report -->
+        <div id="vulnerabilities" class="terminal-card">
+          <header>Vulnerability Report</header>
+          <div class="p-4">
+            <!-- Vulnerability Summary -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+              <div class="terminal-card">
+                <header class="bg-red-500 text-terminal-bg">High Risk</header>
+                <div class="p-3 text-center">
+                  <span class="text-3xl font-bold">{{ namespace(count=0).high_risk }}</span>
+                </div>
+              </div>
+              <div class="terminal-card">
+                <header class="bg-yellow-500 text-terminal-bg">Medium Risk</header>
+                <div class="p-3 text-center">
+                  <span class="text-3xl font-bold">{{ namespace(count=0).medium_risk }}</span>
+                </div>
+              </div>
+              <div class="terminal-card">
+                <header class="bg-blue-500 text-terminal-bg">Low Risk</header>
+                <div class="p-3 text-center">
+                  <span class="text-3xl font-bold">{{ namespace(count=0).low_risk }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detailed Vulnerability List -->
+            <div class="terminal-timeline">
+              {% set has_vulns = false %}
+              {% for item in results %}
+                {% if item.vulnerabilities is defined and item.vulnerabilities|length > 0 %}
+                  {% set has_vulns = true %}
+                  {% for vuln in item.vulnerabilities %}
+                    <div class="terminal-card mb-4 {% if vuln.severity == 'High' %}border-red-500{% elif vuln.severity == 'Medium' %}border-yellow-500{% else %}border-blue-500{% endif %}">
+                      <header class="{% if vuln.severity == 'High' %}bg-red-500{% elif vuln.severity == 'Medium' %}bg-yellow-500{% else %}bg-blue-500{% endif %} text-terminal-bg">
+                        {{ vuln.type }} - {{ item.domain }}
+                      </header>
+                      <div class="p-3">
+                        <div class="mb-2"><strong>Path:</strong> {{ vuln.path }}</div>
+                        <div class="mb-2"><strong>Description:</strong> {{ vuln.description|default('N/A') }}</div>
+                        <div class="mb-2"><strong>Recommendation:</strong> {{ vuln.recommendation|default('N/A') }}</div>
+                        {% if vuln.code %}
+                        <div class="mb-2">
+                          <strong>Code Sample:</strong>
+                          <pre class="terminal-code">{{ vuln.code }}</pre>
+                        </div>
+                        {% endif %}
+                      </div>
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+              
+              {% if not has_vulns %}
+                <p class="text-terminal-secondary">No vulnerabilities found in your scans</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="container mx-auto px-4 py-6 border-t border-terminal-secondary">
+        <div class="text-center text-terminal-secondary">
+          <p>Vulnyx Scanner - Advanced Web Security Analysis Tool</p>
+        </div>
+      </footer>
+    </div>
+  </body>
 </html>

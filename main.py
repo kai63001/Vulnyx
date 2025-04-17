@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 import json
 from pathlib import Path
@@ -10,6 +11,9 @@ templates = Jinja2Templates(directory="templates")
 
 RESULT_PATH = Path("results/results.json")
 RESULT_PATH.parent.mkdir(exist_ok=True)
+
+app.mount("/static", StaticFiles(directory="public"), name="static")
+
 
 @jit(nopython=True)
 def calculate_score(x):
@@ -37,6 +41,7 @@ async def scan(request: Request, domain: str = Form(...)):
     results = []
     if RESULT_PATH.exists():
         results = json.loads(RESULT_PATH.read_text())
+    print(results)
     results.append(result)
     RESULT_PATH.write_text(json.dumps(results, indent=2))
 

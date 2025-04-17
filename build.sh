@@ -17,6 +17,7 @@ python3 -m nuitka "$SOURCE" \
   --include-module=main \
   --include-data-dir=templates=templates \
   --include-data-dir=results=results \
+  --include-data-dir=public=public \
   --output-filename="$OUTPUT" \
   --remove-output
 
@@ -29,6 +30,7 @@ python3 -m nuitka "$SOURCE" \
 #   --include-module=main \
 #   --include-data-dir=templates=templates \
 #   --include-data-dir=results=results \
+#   --include-data-dir=public=public \
 #   --output-filename="$OUTPUT" \
 #   --remove-output
 

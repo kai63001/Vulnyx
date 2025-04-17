@@ -1,0 +1,169 @@
+:root {
+  --background-color: #222225 !important;
+  --font-color: #e8e9ed !important;
+  --invert-font-color: #222225 !important;
+  --primary-color: #62c4ff !important;
+  --secondary-color: #a3abba !important;
+  --error-color: #ff3c74 !important;
+  --progress-bar-background: #3f3f44 !important;
+  --progress-bar-fill: #62c4ff !important;
+  --code-bg-color: #3f3f44 !important;
+  --block-background-color: #3f3f44 !important;
+}
+
+/* Enhanced Terminal Theme */
+.terminal {
+  scrollbar-color: var(--secondary-color) var(--background-color);
+}
+
+.terminal::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.terminal::-webkit-scrollbar-thumb {
+  background-color: var(--secondary-color);
+}
+
+/* Customized Terminal Cards */
+.terminal-card {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.terminal-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.terminal-card header {
+  font-weight: bold;
+  padding: 8px 12px;
+}
+
+/* Vulnerability Items */
+.border-terminal-error {
+  border-color: var(--error-color) !important;
+}
+
+/* Terminal Timeline Customization */
+.terminal-timeline {
+  position: relative;
+}
+
+.terminal-timeline::before {
+  display: none;
+}
+
+/* Enhanced Buttons */
+.btn {
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-primary {
+  background: var(--primary-color);
+  color: var(--invert-font-color);
+}
+
+.btn-primary:hover {
+  background: color-mix(in srgb, var(--primary-color) 85%, white);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+.btn-sm {
+  padding: 4px 8px;
+  font-size: 0.875rem;
+}
+
+/* Form Elements */
+input[type="text"], select {
+  background-color: var(--block-background-color);
+  border: 1px solid var(--secondary-color);
+  color: var(--font-color);
+  padding: 8px 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="text"]:focus, select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(98, 196, 255, 0.25);
+}
+
+/* Status Indicators */
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+}
+
+.status-dot.green {
+  background-color: #4ade80;
+}
+
+.status-dot.yellow {
+  background-color: #facc15;
+}
+
+.status-dot.red {
+  background-color: #f87171;
+}
+
+/* Tables */
+.terminal-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.terminal-table th {
+  background-color: var(--block-background-color);
+  padding: 10px;
+  border-bottom: 1px solid var(--secondary-color);
+}
+
+.terminal-table td {
+  padding: 10px;
+  border-bottom: 1px solid rgba(163, 171, 186, 0.2);
+}
+
+.terminal-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Code Display */
+.terminal-code {
+  background-color: var(--code-bg-color);
+  padding: 12px;
+  overflow-x: auto;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .terminal-nav {
+    flex-direction: column;
+  }
+  
+  .terminal-menu {
+    margin-top: 1rem;
+  }
+}
+
+

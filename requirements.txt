@@ -3,3 +3,10 @@ uvicorn
 jinja2
 numba
 python-multipart
+requests
+python-dateutil
+pydantic
+dnspython
+tld
+bs4
+lxml
