@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head><title>Vulnyx Scanner</title></head>
+<body>
+  <h1>🛠️ Vulnyx Scanner</h1>
+
+  <form method="post" action="/scan">
+    <input type="text" name="domain" placeholder="example.com" required>
+    <button type="submit">Scan</button>
+  </form>
+
+  <h2>Results:</h2>
+  <ul>
+    {% for item in results %}
+      <li>{{ item.domain }} — Score: {{ item.score }}</li>
+    {% endfor %}
+  </ul>
+
+  {% if message %}
+    <p style="color: green;">{{ message }}</p>
+  {% endif %}
+</body>
+</html>
