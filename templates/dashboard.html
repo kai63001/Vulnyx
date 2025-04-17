@@ -41,6 +41,14 @@
               <li><a class="menu-item" href="#history">History</a></li>
               <li><a class="menu-item" href="#vulnerabilities">Vulnerabilities</a></li>
               <li><a class="menu-item" href="#settings">Settings</a></li>
+              {% if user %}
+              <li>
+                <div class="flex items-center space-x-2">
+                  <span class="text-terminal-secondary">{{ user.username }}</span>
+                  <a href="/logout" class="btn btn-sm btn-primary">Logout</a>
+                </div>
+              </li>
+              {% endif %}
             </ul>
           </nav>
         </div>
