@@ -1,5 +1,7 @@
 from sqlalchemy import Boolean, Column, Integer, String
 from passlib.context import CryptContext
+# Explicitly import handlers to ensure they're included when packaging
+import passlib.handlers.bcrypt
 from modules.common.db import Base
 
 # Password hashing
