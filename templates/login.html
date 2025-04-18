@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Login - Vulnyx Scanner</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Vulnyx Scanner</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/terminal.css@0.7.2/dist/terminal.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/static/main.css" />
@@ -43,19 +43,19 @@
           <div class="terminal-card">
             <header class="bg-terminal-primary text-terminal-bg font-bold">Login</header>
             <div class="p-6">
-              {% if error %}
+              {{if .error}}
               <div class="terminal-alert terminal-alert-error mb-4">
-                {{ error }}
+                {{.error}}
               </div>
-              {% endif %}
+              {{end}}
               
-              {% if message %}
+              {{if .message}}
               <div class="terminal-alert terminal-alert-primary mb-4">
-                {{ message }}
+                {{.message}}
               </div>
-              {% endif %}
+              {{end}}
               
-              <form method="post" action="/login" class="space-y-4">
+              <form method="POST" action="/login" class="space-y-4">
                 <div>
                   <label for="username" class="block mb-2">Username</label>
                   <input 
@@ -87,11 +87,11 @@
                 </div>
               </form>
               
-              {% if can_register %}
+              {{if .can_register}}
               <div class="mt-4 text-center">
                 <p>No account? <a href="/register" class="text-terminal-primary">Register</a></p>
               </div>
-              {% endif %}
+              {{end}}
             </div>
           </div>
         </div>

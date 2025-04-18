@@ -1,6 +1,37 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+vulnyx
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories
+vendor/
+
+# Database
+db/
+
+# Go workspace file
+go.work
+go.sum
+
+# Results directory
+results/
+
+# IDE specific files
+.idea/
+.vscode/
+
+# Old Python-specific files
 .venv/
 __pycache__
-.env
 *.pyc
 *.pyo
 *.pyd
@@ -8,6 +39,5 @@ __pycache__
 *.pyz
 *.pywz
 *.bin
-results/
 main.build/
 main.dist/

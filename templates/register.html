@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Vulnyx Scanner</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/terminal.css@0.7.2/dist/terminal.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/static/main.css" />
@@ -42,21 +42,21 @@
         <div class="w-full max-w-md">
           <div class="terminal-card">
             <header class="bg-terminal-primary text-terminal-bg font-bold">
-              {% if is_first_user %}Create Admin Account{% else %}Register{% endif %}
+              {{if .is_first_user}}Create Admin Account{{else}}Register{{end}}
             </header>
             <div class="p-6">
-              {% if error %}
+              {{if .error}}
               <div class="terminal-alert terminal-alert-error mb-4">
-                {{ error }}
+                {{.error}}
               </div>
-              {% endif %}
+              {{end}}
               
-              {% if disabled %}
+              {{if .disabled}}
               <div class="terminal-alert terminal-alert-error mb-4">
                 Registration is disabled. Admin account already exists.
               </div>
-              {% else %}
-              <form method="post" action="/register" class="space-y-4">
+              {{else}}
+              <form method="POST" action="/register" class="space-y-4">
                 <div>
                   <label for="username" class="block mb-2">Username</label>
                   <input 
@@ -105,21 +105,21 @@
                   />
                 </div>
                 
-                {% if is_first_user %}
+                {{if .is_first_user}}
                 <div class="mt-4">
                   <div class="terminal-alert terminal-alert-primary">
                     This will be the admin account as it's the first user in the system.
                   </div>
                 </div>
-                {% endif %}
+                {{end}}
                 
                 <div class="pt-2">
                   <button type="submit" class="btn btn-primary w-full">
-                    {% if is_first_user %}Create Admin Account{% else %}Register{% endif %}
+                    {{if .is_first_user}}Create Admin Account{{else}}Register{{end}}
                   </button>
                 </div>
               </form>
-              {% endif %}
+              {{end}}
               
               <div class="mt-4 text-center">
                 <p>Already have an account? <a href="/login" class="text-terminal-primary">Login</a></p>

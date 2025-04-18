@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Vulnyx Scanner</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/terminal.css@0.7.2/dist/terminal.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/main.css" />
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              terminal: {
+                bg: 'var(--background-color)',
+                text: 'var(--font-color)',
+                primary: 'var(--primary-color)',
+                secondary: 'var(--secondary-color)',
+                error: 'var(--error-color)',
+              }
+            }
+          }
+        }
+      }
+    </script>
+</head>
+<body class="terminal dark">
+    <div class="flex flex-col min-h-screen">
+      <header class="container mx-auto px-4 py-4">
+        <div class="terminal-nav">
+          <div class="terminal-logo">
+            <div class="logo terminal-prompt">
+              <a href="/" class="no-style text-xl font-bold">Vulnyx Scanner</a>
+            </div>
+          </div>
+        </div>
+      </header>
+      
+      <main class="container mx-auto px-4 py-4 flex-grow flex justify-center items-center">
+        <div class="w-full max-w-md">
+          <div class="terminal-card border-terminal-error">
+            <header class="bg-terminal-error text-terminal-bg font-bold">Error</header>
+            <div class="p-6">
+              <div class="terminal-alert terminal-alert-error mb-4">
+                {{ .error }}
+              </div>
+              
+              <div class="text-center">
+                <a href="/" class="btn btn-primary">Back to Dashboard</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <footer class="container mx-auto px-4 py-6 border-t border-terminal-secondary">
+        <div class="text-center text-terminal-secondary">
+          <p>Vulnyx Scanner - Advanced Web Security Analysis Tool</p>
+        </div>
+      </footer>
+    </div>
+</body>
+</html> 

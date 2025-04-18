@@ -1,46 +1,37 @@
 #!/bin/bash
 
-# Exit ถ้ามี error
+# Vulnyx Scanner Build Script
+# This script builds the Vulnyx Scanner Go application
+
 set -e
 
-echo "📦 Starting build for Vulnyx..."
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
 
-# ชื่อไฟล์ต้นทาง
-SOURCE="main.py"
+echo -e "${BLUE}Building Vulnyx Scanner...${NC}"
 
-# ชื่อ binary ที่ต้องการได้
-OUTPUT="vulnyx.bin"
+# Check Go installation
+if ! command -v go &> /dev/null; then
+    echo -e "${RED}Error: Go is not installed or not in PATH.${NC}"
+    echo "Please install Go from https://golang.org/dl/"
+    exit 1
+fi
 
-python3 -m nuitka "$SOURCE" \
-  --standalone \
-  --show-progress \
-  --include-module=main \
-  --include-module=passlib \
-  --include-module=passlib.handlers \
-  --include-module=passlib.handlers.bcrypt \
-  --include-module=sqlalchemy \
-  --include-module=sqlalchemy.ext \
-  --include-module=sqlalchemy.ext.declarative \
-  --include-module=sqlalchemy.orm \
-  --include-data-dir=templates=templates \
-  --include-data-dir=results=results \
-  --include-data-dir=public=public \
-  --include-data-dir=modules=modules \
-  --output-filename="$OUTPUT" \
-  --remove-output
+# Make sure dependencies are installed
+echo -e "${BLUE}Installing dependencies...${NC}"
+go mod download
 
-# สร้าง build ด้วย Nuitka
-# python3 -m nuitka "$SOURCE" \
-#   --standalone \
-#   --onefile \
-#   --lto=yes \
-#   --show-progress \
-#   --include-module=main \
-#   --include-data-dir=templates=templates \
-#   --include-data-dir=results=results \
-#   --include-data-dir=public=public \
-#   --output-filename="$OUTPUT" \
-#   --remove-output
+# Build the application
+echo -e "${BLUE}Compiling...${NC}"
+go build -o vulnyx main.go
 
-echo "✅ Build completed!"
-echo "📂 Output binary: ./$OUTPUT"
+if [ $? -eq 0 ]; then
+    echo -e "${GREEN}Build successful!${NC}"
+    echo -e "${GREEN}You can now run the application with ./vulnyx${NC}"
+else
+    echo -e "${RED}Build failed!${NC}"
+    exit 1
+fi
